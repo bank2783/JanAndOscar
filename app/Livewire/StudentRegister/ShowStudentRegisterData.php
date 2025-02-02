@@ -117,9 +117,9 @@ public function deleteFileInStudentFileUpload($fileColumn)
         Storage::delete($studentFile->$fileColumn);
 
         // อัปเดตให้ค่านั้นเป็น NULL
-        $studentFile->update([
-            $fileColumn => null
-        ]);
+        // $studentFile->update([
+        //     $fileColumn => null
+        // ]);
 
         // อัปเดตหน้า Livewire
         $this->student_register = $this->student_register->fresh();
