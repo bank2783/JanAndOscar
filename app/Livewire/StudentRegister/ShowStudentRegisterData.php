@@ -2,6 +2,8 @@
 
 namespace App\Livewire\StudentRegister;
 
+use App\Models\StudentParents;
+use App\Models\StudentParentsFileUploads;
 use App\Models\StudentRegister;
 use App\Models\StudentRegisterFileUploads;
 use App\Models\StudentRegisterHomePhotos;
@@ -9,9 +11,11 @@ use App\Models\StudentRegisterPhotos;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class ShowStudentRegisterData extends Component
 {
+    use WithFileUploads;
     public $student_register;
     public $student_photos;
 
@@ -32,6 +36,27 @@ class ShowStudentRegisterData extends Component
     #[Rule('required')]
     public $editing_student_register_google_map_link;
 
+    #[Rule('required')]
+    public $editing_student_parent_name;
+    #[Rule('required')]
+    public $editing_student_parent_tel;
+    #[Rule('required')]
+    public $editing_student_parent_line_id;
+    #[Rule('required')]
+    public $editing_student_parent_google_map_link;
+
+    public $editing_student_parent_address;
+    
+    public $editing_student_photo;
+
+    public $editing_student_home_photo;
+
+    public $editing_student_register_file;
+
+    public $edit_student_copy_of_id_card;
+
+    public $editing_parent_file_upload;
+
     public function mount(StudentRegister $student){
         $this->student_register = $student;
         $this->student_photos = StudentRegisterPhotos::where('student_register_id',$student->id)->get();
@@ -43,6 +68,7 @@ class ShowStudentRegisterData extends Component
 {
     $this->editing_student_register_id = $id;
     $student = StudentRegister::find($id);
+    
 
     if (!$student) {
         return;
@@ -54,6 +80,16 @@ class ShowStudentRegisterData extends Component
     $this->editing_student_register_google_map_link = $student->google_map_link;
     $this->editing_student_register_education_level = $student->education_level;
     $this->editing_student_register_address = $student->address;
+
+    $this->editing_student_parent_name = $student->StudentParent->parent_name;
+    $this->editing_student_parent_tel = $student->StudentParent->tel;
+    $this->editing_student_parent_line_id = $student->StudentParent->line_id;
+    $this->editing_student_parent_google_map_link = $student->StudentParent->google_map_link;
+    $this->editing_student_parent_address = $student->StudentParent->address;
+
+    
+
+    
 
     $this->student_register = $student;
 }
@@ -69,6 +105,7 @@ public function cancelEdit()
         'editing_student_register_google_map_link',
         'editing_student_register_education_level',
         'editing_student_register_address',
+        'editing_student_photo'
     ]);
 }
 
@@ -78,6 +115,7 @@ public function updateData()
     $this->validate();
 
     $student = StudentRegister::find($this->editing_student_register_id);
+    $student_parent = StudentParents::where('student_register_id',$student->id);
 
     if ($student) {
         $student->update([
@@ -87,14 +125,23 @@ public function updateData()
             'google_map_link' => $this->editing_student_register_google_map_link,
             'education_level' => $this->editing_student_register_education_level,
             'address' => $this->editing_student_register_address,
-        ]);
+        ]);  
+    }
 
-        session()->flash('success', 'Update is successfully');
+    if($student_parent){
+        $student_parent->update([
+            'parent_name' => $this->editing_student_parent_name,
+            'tel' => $this->editing_student_parent_tel,
+            'line_id' => $this->editing_student_parent_line_id,
+            'google_map_link' => $this->editing_student_parent_google_map_link,
+        ]);
+    }
+
+    session()->flash('success', 'Update is successfully');
 
         // รีเซ็ตค่าและโหลดข้อมูลใหม่
         $this->cancelEdit();
         $this->student_register = StudentRegister::find($this->student_register->id);
-    }
 }
 public function deletePhoto($id)
 {
@@ -107,6 +154,19 @@ public function deletePhoto($id)
     }
 }
 
+public function deleteFileInStudentParentFileUpload($fileColumn){
+    $student_parent_file_upload = $this->student_register->studentParentFileUpload;
+
+    if($student_parent_file_upload && isset($student_parent_file_upload->$fileColumn)){
+        Storage::delete($student_parent_file_upload->$fileColumn);
+        $student_parent_file_upload->update([
+            $fileColumn => null,
+        ]);
+    }
+    $this->student_register = $this->student_register->fresh();
+    session()->flash('message', 'ลบไฟล์เรียบร้อยแล้ว');
+}
+
 public function deleteFileInStudentFileUpload($fileColumn)
 {
     // ดึงข้อมูล studentRegisterFileUpload ของ student_register ปัจจุบัน
@@ -117,9 +177,9 @@ public function deleteFileInStudentFileUpload($fileColumn)
         Storage::delete($studentFile->$fileColumn);
 
         // อัปเดตให้ค่านั้นเป็น NULL
-        // $studentFile->update([
-        //     $fileColumn => null
-        // ]);
+        $studentFile->update([
+            $fileColumn => null
+        ]);
 
         // อัปเดตหน้า Livewire
         $this->student_register = $this->student_register->fresh();
@@ -128,13 +188,58 @@ public function deleteFileInStudentFileUpload($fileColumn)
     }
 }
 
+public function insertFileInStudentFileUpload($fileColumn){
+   
+    $student_register_file_upload = StudentRegisterFileUploads::where('student_register_id',$this->student_register->id)->first();
+    
+    if($student_register_file_upload){
+        
+        $copy_of_birth_new_path = $this->editing_student_register_file->store('uploads/student_register','public');
+        $student_register_file_upload->update([
+            $fileColumn => $copy_of_birth_new_path,
+        ]);
+    }
+    $this->cancelEdit();
+    $this->student_register->studentParentFileUpload->fresh();
+}
 
+public function insertParentFileUpload($fileColumn){
+    $parent_file_upload = StudentParentsFileUploads::where('student_register_id',$this->student_register->id)->first();
+    if($parent_file_upload){
+        $edit_parent_file_upload_path = $this->editing_parent_file_upload->store('uploads/student_register','public');
+        $parent_file_upload->update([
+            $fileColumn => $edit_parent_file_upload_path,
+        ]);
+    }
+}
 public function deleteHomePhoto($id){
     $home_photo = StudentRegisterHomePhotos::find($id);
     if ($home_photo) {
         $home_photo->update(['file_name' => null]);
     }
     $this->student_home_photos = StudentRegisterHomePhotos::where('student_register_id',$this->editing_student_register_id)->get();
+}
+
+public function insertStudentPhoto($id){
+    // dd($this->editing_student_photo);
+    // dd($id);
+    $student_photo = StudentRegisterPhotos::find($id);
+    $student_new_photo_path = $this->editing_student_photo->store('uploads/student_register','public');
+    $student_photo->update([
+        'file_name' => $student_new_photo_path,
+    ]);
+    $this->student_photos = $this->student_photos->fresh();
+    // $this->student_photos = StudentRegisterPhotos::where('student_register_id',$this->editing_student_register_id)->get(); 
+}
+
+public function insertStudentHomePhoto($id){
+    $student_home_photo = StudentRegisterHomePhotos::find($id);
+    $student_new_home_photo_path = $this->editing_student_home_photo->store('uploads/student_register','public');
+
+    $student_home_photo->update([
+        'file_name' => $student_new_home_photo_path,
+    ]);
+    $this->student_home_photos = $this->student_home_photos->fresh();
 }
 
     public function render()

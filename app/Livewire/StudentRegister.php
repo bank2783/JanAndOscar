@@ -108,12 +108,11 @@ class StudentRegister extends Component
         
         $student_insert_file_uploads = StudentRegisterFileUploads::create([
             'essay' => $student_essay_file_path,
-            'copy_of_house_registration' =>$student_copy_of_birth_cercificate_file_path,
+            'copy_of_house_registration' =>$student_copy_of_house_registration_file_path,
             'copy_of_id_card' => $student_copy_of_id_card_file_path,
-            'copy_of_birth_cercificate' =>  $student_copy_of_house_registration_file_path,
+            'copy_of_birth_cercificate' =>  $student_copy_of_birth_cercificate_file_path,
             'student_register_id' => $student_insert->id
         ]);
-
 
         foreach($this->student_selft_image as $file){
             $student_selft_image_file_name = $file->store('uploads/student_register','public');

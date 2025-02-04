@@ -126,39 +126,111 @@
         </div>
             
         <!-- รูปภาพต่าง ๆ -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" >
             <!-- รูปนักเรียน -->
 
             @foreach ($student_photos as $row)
-            <div class="relative inline-block">
-                <label class="block text-gray-700 font-bold mb-2">รูปนักเรียน</label>
-                
-                @if (!empty($row->file_name))
-                    <div class="relative">
-                        <img src="{{ Storage::url($row->file_name) }}" alt="รูปนักเรียน" class="w-full h-auto rounded-lg shadow-md">
-        
-                        @if($editing_student_register_id == $student_register->id)
-                            <!-- ปุ่มลบ -->
-                            <button wire:click="deletePhoto({{ $row->id }}) " wire:confirm="Are you sure want to delete this?"
-                                    class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
-                                &times;
-                            </button>
-                        @endif
-                    </div>
-                @else
-                    <!-- ถ้าไม่มีรูป -->
-                    <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                        <span class="text-gray-500">ไม่มีรูป</span>
-                    </div>
+    <div class="relative inline-block" wire:key="photo-{{ $row->id }}">
+        <label class="block text-gray-700 font-bold mb-2">รูปนักเรียน</label>
+
+        @if (!empty($row->file_name))
+            <div class="relative">
+                <img src="{{ Storage::url($row->file_name) }}" alt="รูปนักเรียน" class="w-full h-auto rounded-lg shadow-md">
+
+                @if($editing_student_register_id == $student_register->id)
+                    <!-- ปุ่มลบ -->
+                    <button wire:click="deletePhoto({{ $row->id }})" wire:confirm="Are you sure want to delete this?"
+                            class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
+                        &times;
+                    </button>
                 @endif
             </div>
-        @endforeach
-        
-            
+        @else
+            <!-- ใช้ Factory Function เพื่อให้แต่ละ component มีตัวแปรของตัวเอง -->
+            <div x-data="studentPhotosUploadComponent({{ $row->id }})" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                
+                <!-- แสดงรูปพรีวิวถ้ามี -->
+                <template x-if="previewUrl">
+                    <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                </template>
 
-            <!-- รูปบ้านนักเรียน -->
+                <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+
+                <!-- ปุ่มเพิ่มรูปภาพ -->
+                <label :for="'file-upload-' + id" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                    เพิ่มรูปภาพ
+                </label>
+
+                <!-- Input file ที่ซ่อนอยู่ -->
+                <input wire:model="editing_student_photo" :id="'file-upload-' + id" type="file" class="hidden"
+                    @change="
+                        const file = $event.target.files[0];
+                        if (file) {
+                            fileName = file.name;
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                previewUrl = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    ">
+
+                <!-- ปุ่มบันทึก และ ปุ่มยกเลิก -->
+                <div class="mt-2 flex space-x-2">
+                    <!-- ปุ่มบันทึก -->
+                    <button wire:click="insertStudentPhoto(id)" x-show="previewUrl"
+                        class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                        บันทึก
+                    </button>
+
+                    <!-- ปุ่มยกเลิก -->
+                    <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>
+        @endif
+    </div>
+@endforeach
+
+<script>
+function studentPhotosUploadComponent(id) {
+    return {
+        id: id, // กำหนด ID ให้แต่ละ instance แยกกัน
+        fileName: '',
+        previewUrl: ''
+    };
+}
+
+function studentHomePhotoComponent(id){
+    return{
+        id:id,
+        fileName:'',
+        previewUrl:''
+    }
+}
+
+function studentFileUploadComponent(fill_name){
+    return{
+        fill_name:fill_name,
+        fileName:'',
+        previewUrl:''
+
+    }
+}
+
+function parentFileUploadComponent(fill_name){
+    return{
+        fill_name:fill_name,
+        fileName:'',
+        previewUrl:''
+    }
+}
+</script>
+
             
-            {{-- รูปบ้านนักเรียน --}}
             @foreach ($student_home_photos as $row )
             <div class="relative inline-block">
                 <label class="block text-gray-700 font-bold mb-2">รูปบ้านนักเรียน</label>
@@ -174,8 +246,44 @@
                     @endif
                 </div>  
                 @else
-                <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                    <span class="text-gray-500">ไม่มีรูป</span>
+                <div x-data="studentHomePhotoComponent({{$row->id}})" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                    <!-- แสดงรูปพรีวิวถ้ามี -->
+                    <template x-if="previewUrl">
+                        <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                    </template>
+                
+                    <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                    <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+                
+                    <!-- ปุ่มเพิ่มรูปภาพ -->
+                    <label :for="'file-upload'+id" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                        เพิ่มรูปภาพ
+                    </label>
+                
+                    <!-- Input file ที่ซ่อนอยู่ -->
+                    <input wire:model="editing_student_home_photo" :id="'file-upload'+id" type="file" class="hidden"
+                        @change="
+                            const file = $event.target.files[0];
+                            if (file) {
+                                fileName = file.name;
+                                const reader = new FileReader();
+                                reader.onload = (e) => previewUrl = e.target.result;
+                                reader.readAsDataURL(file);
+                            }
+                        ">
+                
+                    <!-- ปุ่มบันทึก -->
+                    <div class="mt-2 flex space-x-2">
+                        <button wire:click="insertStudentHomePhoto({{$row->id}})" x-show="previewUrl" 
+                            class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                            บันทึก
+                        </button>
+                        <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
+                    </button>
+                    </div>
+                    
                 </div>
                 @endif
             </div>
@@ -186,59 +294,115 @@
             <div class="relative inline-block">
                 <label class="block text-gray-700 font-bold mb-2">รูปสำเนาใบเกิด</label>
                 @if(!empty($student_register->studentRegisterFileUpload->copy_of_birth_cercificate))
-                <div class="relative">
-                    <img src="{{ Storage::url($student_register->studentRegisterFileUpload->copy_of_birth_cercificate) }}" alt="รูปสำเนาใบเกิด" class="w-full h-auto rounded-lg shadow-md">
-
-                    @if($editing_student_register_id == $student_register->id)
+                    <div class="relative">
+                        <img src="{{ Storage::url($student_register->studentRegisterFileUpload->copy_of_birth_cercificate) }}" alt="รูปสำเนาใบเกิด" class="w-full h-auto rounded-lg shadow-md">
+                        
+                        @if($editing_student_register_id == $student_register->id)
                             <!-- ปุ่มลบ -->
-                            <button wire:click="deleteFileInStudentFileUpload({{ $row->id }})" 
+                            <button wire:click="deleteFileInStudentFileUpload('copy_of_birth_cercificate')" 
                                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
                                 &times;
                             </button>
-                    @endif
-                </div>  
+                        @endif
+                    </div>
                 @else
-                <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                    <span class="text-gray-500">ไม่มีรูป</span>
-                </div>
+                    <div x-data="studentFileUploadComponent('copy_of_birth_cercificate')" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                        <!-- แสดงรูปพรีวิวถ้ามี -->
+                        <template x-if="previewUrl">
+                            <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                        </template>
+                    
+                        <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                        <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+                    
+                        <!-- ปุ่มเพิ่มรูปภาพ -->
+                        <label :for="'file-upload-' + fill_name" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                            เพิ่มรูปภาพ
+                        </label>
+                    
+                        <!-- Input file ที่ซ่อนอยู่ -->
+                        <input wire:model="editing_student_register_file" :id="'file-upload-' + fill_name" type="file" class="hidden"
+                            @change="
+                                const file = $event.target.files[0];
+                                if (file) {
+                                    fileName = file.name;
+                                    const reader = new FileReader();
+                                    reader.onload = (e) => previewUrl = e.target.result;
+                                    reader.readAsDataURL(file);
+                                }
+                            ">
+                    
+                        <!-- ปุ่มบันทึก -->
+                        <div class="mt-2 flex space-x-2">
+                            <button wire:click="insertFileInStudentFileUpload('copy_of_birth_cercificate')" x-show="previewUrl" 
+                            class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                                บันทึก
+                            </button>
+                            <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                            class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                            ยกเลิก
+                        </button>
+                        </div>
+                        
+                    </div>
                 @endif
             </div>
-
+            
             <!-- รูปสำเนาบัตรประชาชนนักเรียน -->
             <div class="relative inline-block">
                 <label class="block text-gray-700 font-bold mb-2">รูปสำเนาบัตรประชาชนนักเรียน</label>
                 @if(!empty($student_register->studentRegisterFileUpload->copy_of_id_card))
-                <img src="{{ Storage::url($student_register->studentRegisterFileUpload->copy_of_id_card) }}" alt="รูปสำเนาบัตรประชาชนนักเรียน" class="w-full h-auto rounded-lg shadow-md">
-                    @if($editing_student_register_id == $student_register->id)
+                    <div class="relative">
+                        <img src="{{ Storage::url($student_register->studentRegisterFileUpload->copy_of_id_card) }}" alt="รูปสำเนาบัตรประชาชนนักเรียน" class="w-full h-auto rounded-lg shadow-md">
+                        
+                        @if($editing_student_register_id == $student_register->id)
                             <!-- ปุ่มลบ -->
-                            <button wire:click="deleteFileInStudentFileUpload({{ 'copy_of_id_card'}})" 
+                            <button wire:click="deleteFileInStudentFileUpload('copy_of_id_card')" 
                                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
                                 &times;
                             </button>
-                    @endif
+                        @endif
+                    </div>
                 @else
-                <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                    <span class="text-gray-500">ไม่มีรูป</span>
-                </div>
-                @endif
-            </div>
-            {{-- {{Storage::url($student_register->studentRegisterFileUpload->essay)}} --}}
-            <!-- รูปสำเนาทะเบียนบ้าน -->
-            <div class="relative inline-block">
-                <label class="block text-gray-700 font-bold mb-2">รูปสำเนาทะเบียนบ้าน</label>
-                @if(!empty($student_register->studentRegisterFileUpload->copy_of_house_registration))
-                <img src="{{ Storage::url($student_register->studentRegisterFileUpload->copy_of_house_registration) }}" alt="รูปสำเนาทะเบียนบ้าน" class="w-full h-auto rounded-lg shadow-md">
-                    @if($editing_student_register_id == $student_register->id)
-                <!-- ปุ่มลบ -->
-                    <button wire:click="deleteFileInStudentFileUpload({{ $row->id }})" 
-                            class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
-                        &times;
+                    <div x-data="studentFileUploadComponent('copy_id_card')" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                        <!-- แสดงรูปพรีวิวถ้ามี -->
+                        <template x-if="previewUrl">
+                            <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                        </template>
+                    
+                        <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                        <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+                    
+                        <!-- ปุ่มเพิ่มรูปภาพ -->
+                        <label :for="'file-upload-' + fill_name" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                            เพิ่มรูปภาพ
+                        </label>
+                    
+                        <!-- Input file ที่ซ่อนอยู่ -->
+                        <input wire:model="editing_student_register_file" :id="'file-upload-' + fill_name" type="file" class="hidden"
+                            @change="
+                                const file = $event.target.files[0];
+                                if (file) {
+                                    fileName = file.name;
+                                    const reader = new FileReader();
+                                    reader.onload = (e) => previewUrl = e.target.result;
+                                    reader.readAsDataURL(file);
+                                }
+                            ">
+                    
+                        <!-- ปุ่มบันทึก -->
+                        <div class="mt-2 flex space-x-2">
+                            <button wire:click="insertFileInStudentFileUpload('copy_of_id_card')" x-show="previewUrl" 
+                            class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                                บันทึก
+                            </button>
+                            <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
                     </button>
-                    @endif
-                @else
-                <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                    <span class="text-gray-500">ไม่มีรูป</span>
-                </div>
+                        </div>
+                        
+                    </div>
                 @endif
             </div>
             <div class="relative">
@@ -247,15 +411,51 @@
                 <img src="{{Storage::url($student_register->studentRegisterFileUpload->essay)}}" alt="รูปสำเนาทะเบียนบ้าน" class="w-full h-auto rounded-lg shadow-md">
                     @if($editing_student_register_id == $student_register->id)
                 <!-- ปุ่มลบ -->
-                    <button wire:click="deleteFileInStudentFileUpload({{ $row->id }})" 
+                    <button wire:click="deleteFileInStudentFileUpload('essay')" 
                             class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
                         &times;
                     </button>
                     @endif
                 @else
 
-                <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                    <span class="text-gray-500">ไม่มีรูป</span>
+                <div x-data="studentFileUploadComponent('essay')" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                    <!-- แสดงรูปพรีวิวถ้ามี -->
+                    <template x-if="previewUrl">
+                        <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                    </template>
+                
+                    <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                    <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+                
+                    <!-- ปุ่มเพิ่มรูปภาพ -->
+                    <label :for="'file-upload'+fill_name" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                        เพิ่มรูปภาพ
+                    </label>
+                
+                    <!-- Input file ที่ซ่อนอยู่ -->
+                    <input wire:model="editing_student_register_file" :id="'file-upload'+fill_name" type="file" class="hidden"
+                        @change="
+                            const file = $event.target.files[0];
+                            if (file) {
+                                fileName = file.name;
+                                const reader = new FileReader();
+                                reader.onload = (e) => previewUrl = e.target.result;
+                                reader.readAsDataURL(file);
+                            }
+                        ">
+                
+                    <!-- ปุ่มบันทึก -->
+                    <div class="mt-2 flex space-x-2">
+                        <button wire:click="insertFileInStudentFileUpload('essay')" x-show="previewUrl" 
+                        class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                            บันทึก
+                        </button>
+                        <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
+                    </button>
+                    </div>
+                    
                 </div>
                 @endif
             </div>
@@ -269,7 +469,7 @@
         <div>
             @if($editing_student_register_id == $student_register->id)
             <label class="block text-gray-700 font-bold mb-2">ชื่อผู้ปกครอง</label>
-            <input value="{{$student_register->studentParent->parent_name}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+            <input wire:model="editing_student_parent_name" value="{{$student_register->studentParent->parent_name}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
             @else
             <label class="block text-gray-700 font-bold mb-2">ชื่อผู้ปกครอง</label>
             <p class="text-gray-900">{{$student_register->studentParent->parent_name}}</p>
@@ -280,7 +480,7 @@
         <div>
             @if($editing_student_register_id == $student_register->id)
             <label class="block text-gray-700 font-bold mb-2">เบอร์โทร</label>
-            <input value="{{$student_register->studentParent->tel}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+            <input wire:model="editing_student_parent_tel" value="{{$student_register->studentParent->tel}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
             @else
             <label class="block text-gray-700 font-bold mb-2">เบอร์โทร</label>
             <p class="text-gray-900">{{$student_register->studentParent->tel}}</p>
@@ -291,7 +491,7 @@
         <div>
             @if($editing_student_register_id == $student_register->id)
             <label class="block text-gray-700 font-bold mb-2">Line ID</label>
-            <input value="{{$student_register->studentParent->line_id}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+            <input wire:model="editing_student_parent_line_id" value="{{$student_register->studentParent->line_id}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
             @else
             <label class="block text-gray-700 font-bold mb-2">Line ID</label>
             <p class="text-gray-900">{{$student_register->studentParent->line_id}}</p>
@@ -302,7 +502,7 @@
         <div>
             @if($editing_student_register_id == $student_register->id)
             <label class="block text-gray-700 font-bold mb-2">Google Map Link</label>
-            <input value="{{$student_register->studentParent->google_map_link}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+            <input wire:model="editing_student_parent_google_map_link" value="{{$student_register->studentParent->google_map_link}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
             @else
             <label class="block text-gray-700 font-bold mb-2">Google Map Link</label>
             <a href="{{$student_register->studentParent->google_map_link}}" target="_blank" class="text-blue-500 hover:underline">
@@ -315,7 +515,7 @@
         <div class="md:col-span-2">
             @if($editing_student_register_id == $student_register->id)
             <label class="block text-gray-700 font-bold mb-2">ที่อยู่</label>
-            <input value="{{$student_register->studentParent->line_id}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+            <input wire:model="editing_student_parent_address" value="{{$student_register->studentParent->line_id}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
             @else
             <label class="block text-gray-700 font-bold mb-2">ที่อยู่</label>
             <p class="text-gray-900">{{$student_register->studentParent->address}}</p>
@@ -331,14 +531,50 @@
             @if(!empty($student_register->studentParentFileUpload->copy_of_house_registration))
             <img src="{{Storage::url($student_register->studentParentFileUpload->copy_of_house_registration)}}" alt="สำเนาทะเบียนบ้านผู้ปกครอง" class="w-full h-auto rounded-lg shadow-md">
                 @if($editing_student_register_id == $student_register->id)
-                <button wire:click="deleteFileInStudentFileUpload({{ $row->id }})" 
+                <button wire:click="deleteFileInStudentParentFileUpload('copy_of_house_registration')" 
                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
                 &times;
                 @endif
             </button>
             @else
-            <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                <span class="text-gray-500">ไม่มีรูป</span>
+            <div x-data="studentFileUploadComponent('copy_house_registration')" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                <!-- แสดงรูปพรีวิวถ้ามี -->
+                <template x-if="previewUrl">
+                    <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                </template>
+            
+                <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+            
+                <!-- ปุ่มเพิ่มรูปภาพ -->
+                <label :for="'file-upload'+fill_name" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                    เพิ่มรูปภาพ
+                </label>
+            
+                <!-- Input file ที่ซ่อนอยู่ -->
+                <input wire:model="editing_parent_file_upload" :id="'file-upload'+fill_name" type="file" class="hidden"
+                    @change="
+                        const file = $event.target.files[0];
+                        if (file) {
+                            fileName = file.name;
+                            const reader = new FileReader();
+                            reader.onload = (e) => previewUrl = e.target.result;
+                            reader.readAsDataURL(file);
+                        }
+                    ">
+            
+                <!-- ปุ่มบันทึก -->
+                <div class="mt-2 flex space-x-2">
+                    <button wire:click="insertParentFileUpload('copy_of_house_registration')" x-show="previewUrl" 
+                    class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                        บันทึก
+                    </button>
+                    <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
+                    </button> 
+                </div>
+                
             </div>
             @endif
 
@@ -348,11 +584,11 @@
         <!-- สำเนาบัตรประชาชน -->
         <div class="relative">
             <label class="block text-gray-700 font-bold mb-2">สำเนาบัตรประชาชนผู้ปกครอง</label>
-            @if(!empty($student_register->studentParentFileUpload->copy_of_house_registration))
+            @if(!empty($student_register->studentParentFileUpload->copy_of_id_card))
             <img src="{{Storage::url($student_register->studentParentFileUpload->copy_of_id_card)}}" alt="สำเนาบัตรประชาชนผู้ปกครอง" class="w-full h-auto rounded-lg shadow-md">
                 @if($editing_student_register_id == $student_register->id)
 
-                <button wire:click="deleteFileInStudentFileUpload({{ $row->id }})" 
+                <button wire:click="deleteFileInStudentParentFileUpload('copy_of_id_card')" 
                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
                     &times;
 
@@ -360,8 +596,44 @@
 
             @else
 
-            <div class="w-40 h-40 border-2 border-gray-300 flex items-center justify-center rounded-lg bg-gray-100">
-                <span class="text-gray-500">ไม่มีรูป</span>
+            <div x-data="parentFileUploadComponent('copy_id_card')" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                <!-- แสดงรูปพรีวิวถ้ามี -->
+                <template x-if="previewUrl">
+                    <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                </template>
+            
+                <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+            
+                <!-- ปุ่มเพิ่มรูปภาพ -->
+                <label :for="'file-upload'+fill_name" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                    เพิ่มรูปภาพ
+                </label>
+            
+                <!-- Input file ที่ซ่อนอยู่ -->
+                <input wire:model="editing_parent_file_upload" :id="'file-upload'+fill_name" type="file" class="hidden"
+                    @change="
+                        const file = $event.target.files[0];
+                        if (file) {
+                            fileName = file.name;
+                            const reader = new FileReader();
+                            reader.onload = (e) => previewUrl = e.target.result;
+                            reader.readAsDataURL(file);
+                        }
+                    ">
+            
+                <!-- ปุ่มบันทึก -->
+                <div class="mt-2 flex space-x-2">
+                    <button wire:click="insertParentFileUpload('copy_of_id_card')" x-show="previewUrl" 
+                    class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                        บันทึก
+                    </button>
+                    <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
+                    </button> 
+                </div>
+                
             </div>
 
             @endif
