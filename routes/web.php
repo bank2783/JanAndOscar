@@ -7,6 +7,7 @@ use App\Livewire\Home\Login;
 use App\Livewire\StudentRegister;
 use App\Livewire\StudentRegister\ShowStudentRegisterData;
 use App\Livewire\StudentRegister\ShowStudentRegisterList;
+use App\Livewire\StudentSponsored\ShowData;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,18 +17,24 @@ Route::get('/', function () {
 //     return view('admin.Dashboard');
 // });
 
-Route::get('/admin/Dashboard',Dashboard::class);
+Route::get('/admin/student-register-list',Dashboard::class);
 
 Route::get('/test-modal',function () {
     return view('testModal');
 });
+
+// Route::get('/admin/student-register-data/{student}', function () {
+//     return view('Admin.student_regsiter_data');
+// });
+
+Route::get('/admin/sponsored-student/{student}',ShowData::class);
 
 Route::get('/student-register-list',ShowStudentRegisterList::class);
 // Route::get('/register', function (){
 //     return view('home.register');
 // });
 
-Route::get('/student-register-data/{student}',ShowStudentRegisterData::class);
+Route::get('/student-register-data/{student}',ShowStudentRegisterData::class)->name('student-register-data');
 
 Route::get('/register',Register::class);
 

@@ -2,16 +2,22 @@
 
 namespace App\Livewire\StudentRegister;
 
+use App\Models\AcademicPerfomance;
 use App\Models\StudentParents;
 use App\Models\StudentParentsFileUploads;
 use App\Models\StudentRegister;
 use App\Models\StudentRegisterFileUploads;
 use App\Models\StudentRegisterHomePhotos;
 use App\Models\StudentRegisterPhotos;
+use App\Models\StudentSponsored;
+use App\Models\StudentSponsoredParent;
+use App\Models\StudentSponsoredParents;
+use App\Models\StudentSponsoredPhotos;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Auth;
 
 class ShowStudentRegisterData extends Component
 {
@@ -242,8 +248,47 @@ public function insertStudentHomePhoto($id){
     $this->student_home_photos = $this->student_home_photos->fresh();
 }
 
+public function insertStudentSponsored()
+{
+    // dd($this->student_register->student_name);
+    $student_sponsored = StudentSponsored::create([
+        'student_name' => $this->student_register->student_name,
+        'tel' => $this->student_register->tel,
+        'line_id' => $this->student_register->line_id,
+        'adress' => $this->student_register->address,
+        'education_level' =>  $this->student_register->education_level,
+        'google_map_link' => $this->student_register->google_map_link,
+        'note' => null
+    ]);
+
+    StudentSponsoredParents::create([
+        'parent_name' => $this->student_register->StudentParent->parent_name,
+        'tel' => $this->student_register->StudentParent->tel,
+        'line_id' => $this->student_register->StudentParent->line_id,
+        'address' => $this->student_register->StudentParent->address,
+        'google_map_link' => $this->student_register->google_map_link,
+        'student_sponsored_id' => $student_sponsored->id,
+    ]);
+
+    AcademicPerfomance::create([
+        'file_name' => null,
+        'annotation' => null,
+        'sponsoredStudent_id' => $student_sponsored->id
+    ]);
+    StudentSponsoredPhotos::create([
+        'file_name' => null,
+        'studentSponsored_id' => $student_sponsored->id
+    ]);
+
+    session()->flash('insert_student_sponsored', 'Student Data added to Sponsored!');
+
+}
+
     public function render()
     {
+        if(Auth::user()->role_id == 1){
+            return view('livewire.student-register.show-student-register-data')->layout('Admin.components.layouts.app');
+        }elseif(Auth::user()->role_id == 2)
 
         return view('livewire.student-register.show-student-register-data');
     }

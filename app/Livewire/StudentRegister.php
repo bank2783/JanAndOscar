@@ -153,6 +153,7 @@ class StudentRegister extends Component
             'copy_of_id_card' => $parent_copy_of_id_card_file_path,
             'student_register_id' => $student_insert->id
         ]);
+        
         session()->flash('success','Uploaded successfully.');
         
     }
