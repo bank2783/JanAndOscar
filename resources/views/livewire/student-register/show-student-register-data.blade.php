@@ -121,6 +121,8 @@
                 <p class="text-gray-900">{{ $student_register->address }}</p>
             </div>
             @endif
+
+            
             <!-- ที่อยู่ -->
             
         </div>

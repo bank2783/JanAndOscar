@@ -15,4 +15,12 @@ class StudentSponsored extends Model
         'note',
         'note',
     ];
+
+    public function StudentSponsoredParent(){
+        return $this->HasOne(StudentSponsoredParents::class,'student_sponsored_id');
+    }
+
+    public function StudentSponsoredPhoto(){
+        return $this->HasOne(StudentSponsoredPhotos::class,'studentSponsored_id');
+    }
 }

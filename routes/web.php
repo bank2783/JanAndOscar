@@ -8,6 +8,7 @@ use App\Livewire\StudentRegister;
 use App\Livewire\StudentRegister\ShowStudentRegisterData;
 use App\Livewire\StudentRegister\ShowStudentRegisterList;
 use App\Livewire\StudentSponsored\ShowData;
+use App\Livewire\StudentSponsored\ShowStudentImages;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,6 +29,7 @@ Route::get('/test-modal',function () {
 // });
 
 Route::get('/admin/sponsored-student/{student}',ShowData::class);
+Route::get('/admin/sponsored-student/images/{student}',ShowStudentImages::class);
 
 Route::get('/student-register-list',ShowStudentRegisterList::class);
 // Route::get('/register', function (){

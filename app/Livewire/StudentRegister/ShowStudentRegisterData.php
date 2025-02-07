@@ -14,7 +14,7 @@ use App\Models\StudentSponsoredParent;
 use App\Models\StudentSponsoredParents;
 use App\Models\StudentSponsoredPhotos;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Attributes\Rule;
+use Livewire\Attributes\Rule; 
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
@@ -270,15 +270,15 @@ public function insertStudentSponsored()
         'student_sponsored_id' => $student_sponsored->id,
     ]);
 
-    AcademicPerfomance::create([
-        'file_name' => null,
-        'annotation' => null,
-        'sponsoredStudent_id' => $student_sponsored->id
-    ]);
-    StudentSponsoredPhotos::create([
-        'file_name' => null,
-        'studentSponsored_id' => $student_sponsored->id
-    ]);
+    // AcademicPerfomance::create([
+    //     'file_name' => null,
+    //     'annotation' => null,
+    //     'sponsoredStudent_id' => $student_sponsored->id
+    // ]);
+    // StudentSponsoredPhotos::create([
+    //     'file_name' => null,
+    //     'studentSponsored_id' => $student_sponsored->id
+    // ]);
 
     session()->flash('insert_student_sponsored', 'Student Data added to Sponsored!');
 
