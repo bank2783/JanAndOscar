@@ -15,9 +15,6 @@
                 <div class="w-full h-full bg-gray-100 rounded overflow-hidden">
                     <img class="w-full h-full object-cover" src="{{Storage::url($row->file_name)}}" alt="Student Profile Image">
                 </div>
-            
-                
-            
         @endforeach
     </div>
 
