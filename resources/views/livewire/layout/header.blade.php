@@ -24,12 +24,23 @@
                     <li>
                         <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">สำหรับผู้ดูแลระบบ</a>
                     </li>
+                    @if(Auth::check())
+
+                    <li>
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">ตรวจสอบรายชื่อการขอทุนการศึกษา</a>
+                    </li>
+
+                    @endif
+                    
+                    @if(!Auth::check())
                     <li>
                         <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">สมัครสมาชิก</a>
                     </li>
                     <li>
                         <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">เข้าสู่ระบบ</a>
                     </li>
+
+                    @endif 
                 </ul>
                 
             </div>

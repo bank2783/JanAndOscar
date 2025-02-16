@@ -8,6 +8,7 @@ use App\Models\StudentSponsoredPhotos;
 use Livewire\Component;
 use Livewire\Attributes\Rule; 
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 class ShowStudentImages extends Component
 {
@@ -20,7 +21,7 @@ class ShowStudentImages extends Component
 
     public function mount(StudentSponsored $student){
         $this->student_data = $student;
-        $this->student_images = $student->StudentSponsoredPhoto()->get();
+        
     }
 
     public function UploadImages(){
@@ -32,10 +33,21 @@ class ShowStudentImages extends Component
                 'studentSponsored_id' => $this->student_data->id,
             ]);
         }
+        session()->flash('insert_massage','student data updated!');
+        
+    }
+
+    public function deletePhoto($id){
+        $student_image = StudentSponsoredPhotos::find($id);
+
+        if($student_image){
+            Storage::delete($student_image->file_name);
+            $student_image->delete();
+        }
     }
     public function render()
     {
-        
+        $this->student_images = StudentSponsoredPhotos::where('studentSponsored_id',$this->student_data->id)->get();
         return view('livewire.student-sponsored.show-student-images')->layout('Admin.components.layouts.app');
     }
 }
