@@ -2,6 +2,8 @@
 
 namespace App\Livewire\StudentSponsored;
 
+use App\Models\StudentParents;
+use App\Models\StudentRegister;
 use App\Models\StudentSponsored;
 use App\Models\StudentSponsoredParents;
 use Livewire\Component;
@@ -42,13 +44,13 @@ class ShowData extends Component
     
 
 
-    public function mount(StudentSponsored $student){
+    public function mount(StudentRegister $student){
         $this->student_data = $student;
     }
 
     public function edit($id){
         $this->editing_student_id = $id;
-        $student = StudentSponsored::find($id);
+        $student = StudentRegister::find($id);
         if(!$student){
             return;
         }
@@ -58,21 +60,21 @@ class ShowData extends Component
         $this->editing_student_line_id = $student->line_id;
         $this->editing_student_education_level = $student->education_level;
         $this->editing_student_google_map_link = $student->google_map_link;
-        $this->editing_student_address = $student->adress;
+        $this->editing_student_address = $student->address;
         $this->editing_student_note = $student->note;
 
-        $this->editing_parent_name = $student->StudentSponsoredParent->parent_name;
-        $this->editing_parent_tel = $student->StudentSponsoredParent->tel;
-        $this->editing_parent_line_id = $student->StudentSponsoredParent->line_id;
-        $this->editing_parent_google_map_link = $student->StudentSponsoredParent->google_map_link;
-        $this->editing_parent_address = $student->StudentSponsoredParent->address;
+        $this->editing_parent_name = $student->studentParent->parent_name;
+        $this->editing_parent_tel = $student->studentParent->tel;
+        $this->editing_parent_line_id = $student->studentParent->line_id;
+        $this->editing_parent_google_map_link = $student->studentParent->google_map_link;
+        $this->editing_parent_address = $student->studentParent->address;
 
         $this->student_data = $student;
     }
 
     public function update(){
         $this->validate();
-        $student = StudentSponsored::find($this->student_data->id);
+        $student = StudentRegister::find($this->student_data->id);
         if($student){
             $student->update([
                 'student_name' => $this->editing_student_name,
@@ -84,7 +86,7 @@ class ShowData extends Component
             ]);
         }
 
-        $student_parent = StudentSponsoredParents::where('student_sponsored_id',$this->student_data->id);
+        $student_parent = StudentParents::where('student_register_id',$this->student_data->id);
 
         if($student_parent){
             $student_parent->update([

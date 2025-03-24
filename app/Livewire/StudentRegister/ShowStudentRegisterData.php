@@ -3,6 +3,7 @@
 namespace App\Livewire\StudentRegister;
 
 use App\Models\AcademicPerfomance;
+use App\Models\CertificationDocument;
 use App\Models\StudentParents;
 use App\Models\StudentParentsFileUploads;
 use App\Models\StudentRegister;
@@ -63,6 +64,9 @@ class ShowStudentRegisterData extends Component
 
     public $editing_parent_file_upload;
 
+    public $editing_data_guarantee_document;
+    public $editing_financial_guarantee_document;
+
     public function mount(StudentRegister $student){
         $this->student_register = $student;
         $this->student_photos = StudentRegisterPhotos::where('student_register_id',$student->id)->get();
@@ -92,7 +96,9 @@ class ShowStudentRegisterData extends Component
     $this->editing_student_parent_line_id = $student->StudentParent->line_id;
     $this->editing_student_parent_google_map_link = $student->StudentParent->google_map_link;
     $this->editing_student_parent_address = $student->StudentParent->address;
-
+    
+    $this->editing_data_guarantee_document = $student->CertificationDocument->data_guarantee_document;
+    $this->editing_financial_guarantee_document = $student->CertificationDocument->financial_guarantee_document;
     
 
     
@@ -248,27 +254,32 @@ public function insertStudentHomePhoto($id){
     $this->student_home_photos = $this->student_home_photos->fresh();
 }
 
-public function insertStudentSponsored()
+public function insertStudentSponsored($id)
 {
-    // dd($this->student_register->student_name);
-    $student_sponsored = StudentSponsored::create([
-        'student_name' => $this->student_register->student_name,
-        'tel' => $this->student_register->tel,
-        'line_id' => $this->student_register->line_id,
-        'adress' => $this->student_register->address,
-        'education_level' =>  $this->student_register->education_level,
-        'google_map_link' => $this->student_register->google_map_link,
-        'note' => null
+    StudentRegister::find($id)->update([
+        'status' => 9
     ]);
 
-    StudentSponsoredParents::create([
-        'parent_name' => $this->student_register->StudentParent->parent_name,
-        'tel' => $this->student_register->StudentParent->tel,
-        'line_id' => $this->student_register->StudentParent->line_id,
-        'address' => $this->student_register->StudentParent->address,
-        'google_map_link' => $this->student_register->google_map_link,
-        'student_sponsored_id' => $student_sponsored->id,
-    ]);
+    
+    // dd($this->student_register->student_name);
+    // $student_sponsored = StudentSponsored::create([
+    //     'student_name' => $this->student_register->student_name,
+    //     'tel' => $this->student_register->tel,
+    //     'line_id' => $this->student_register->line_id,
+    //     'adress' => $this->student_register->address,
+    //     'education_level' =>  $this->student_register->education_level,
+    //     'google_map_link' => $this->student_register->google_map_link,
+    //     'note' => null
+    // ]);
+
+    // StudentSponsoredParents::create([
+    //     'parent_name' => $this->student_register->StudentParent->parent_name,
+    //     'tel' => $this->student_register->StudentParent->tel,
+    //     'line_id' => $this->student_register->StudentParent->line_id,
+    //     'address' => $this->student_register->StudentParent->address,
+    //     'google_map_link' => $this->student_register->google_map_link,
+    //     'student_sponsored_id' => $student_sponsored->id,
+    // ]);
 
     // AcademicPerfomance::create([
     //     'file_name' => null,
@@ -284,12 +295,25 @@ public function insertStudentSponsored()
 
 }
 
+    public function deleteCertification($fill){
+        $certificate = $this->student_register->CertificationDocument;
+        if($certificate and isset($certificate->$fill)){
+            Storage::delete($certificate->$fill);
+            $certificate->update([
+                $fill => null
+            ]);
+        }
+        $this->student_register = $this->student_register->fresh();
+    }
+
     public function render()
     {
-        if(Auth::user()->role_id == 1){
-            return view('livewire.student-register.show-student-register-data')->layout('Admin.components.layouts.app');
-        }elseif(Auth::user()->role_id == 2)
+        $certificate_document = CertificationDocument::where('student_register_id',$this->student_register)->first();
 
-        return view('livewire.student-register.show-student-register-data');
+        if(Auth::user()->role_id == 1){
+            return view('livewire.student-register.show-student-register-data',compact('certificate_document'))->layout('Admin.components.layouts.app');
+        }elseif(Auth::user()->role_id == 2)
+        
+        return view('livewire.student-register.show-student-register-data',compact('certificate_document'));
     }
 }

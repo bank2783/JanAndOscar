@@ -193,6 +193,39 @@
           @enderror
             </div>
           </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <label class="text-xl font-semibold mb-4" for="">เอกสารรับรอง (มีหรือไม่มีก็ได้)</label>
+              <p class="mt-3 block text-sm font-medium text-gray-700">เอกสารรับรองความถูกต้องของข้อมูล</p>
+              <input wire:model="data_guarantee_document"  type="file" id="" name="" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+              <p class="mt-10 block text-sm font-medium text-gray-700">เอกสารรับรองฐานะทางการเงิน</p>
+              <input wire:model="financial_guarantee_document"  type="file" id="" name="" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+           
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <label class="text-xl font-semibold mb-4" for="">การประเมินเบื้องต้น</label>
+              <p class="mt-3 block text-sm font-medium text-gray-700">ระดับการเรียน</p>
+              <select wire:model="study_point" id="" class="mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option selected>เลือกระดับผลการเรียน</option>
+                @foreach ($study_level as $row )
+                  <option value="{{$row->point}}">{{$row->study_level_name}}</option>
+                @endforeach
+              </select>
+            </div>
+            <div>
+              <p class="mt-10 block text-sm font-medium text-gray-700">ระดับฐานะครอบครัว</p>
+              <select wire:model="financial_point" id="" class="mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option  selected>เลือกระดับฐานะ</option>
+                @foreach ($financial as $row )
+                  <option value="{{$row->point}}">{{$row->financial_level}}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
         </div>
   
         <!-- ส่วนข้อมูลนัดเรียน -->

@@ -230,6 +230,22 @@ function parentFileUploadComponent(fill_name){
         previewUrl:''
     }
 }
+
+function dataGuaranteeDocument(fill_name){
+    return{
+        fill_name:fill_name,
+        fileName:'',
+        previewUrl:''
+    }
+}
+
+function financialGuaranteeDocument(fill_name){
+    return{
+        fill_name:fill_name,
+        fileName:'',
+        previewUrl:''
+    }
+}
 </script>
 
             
@@ -463,7 +479,7 @@ function parentFileUploadComponent(fill_name){
             </div>
         </div>
         <!-- ข้อมูลผู้ปกครอง -->
-<div class="mt-10">
+    <div class="mt-10">
     <h2 class="text-2xl font-bold mb-6">ข้อมูลผู้ปกครอง</h2>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -642,19 +658,155 @@ function parentFileUploadComponent(fill_name){
         </div>
         
     </div>
-    <div>
-        @if(Auth::user()->role_id == 1)
-        <button wire:click="insertStudentSponsored" type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-            เพิ่มข้อมูลรายชื่อเข้าเป็นนักเรียนทุนการศึกษา
-        </button>
-        @endif
-    </div>
+    
     <div>
     @if (session()->has('insert_student_sponsored'))
     <div class="text-green-500 text-xs">{{ session('insert_student_sponsored') }}</div>
       @endif
     </div>
 </div>
+<div class="mt-10">
+    <h2 class="text-2xl font-bold mb-6">เอกสารยืนยันข้อมูล</h2>
+    
+    <div class="relative inline-block" >
+        <label class="block text-gray-700 font-bold mb-2">รูปนักเรียน</label>
+
+        @if ($student_register->CertificationDocument->data_guarantee_document)
+            <div class="relative">
+                <img src="{{ Storage::url($student_register->CertificationDocument->data_guarantee_document) }}" alt="รูปนักเรียน" class="w-full h-auto rounded-lg shadow-md">
+
+                @if($editing_student_register_id == $student_register->id)
+                    <!-- ปุ่มลบ -->
+                    <button wire:click="deleteCertification('data_guarantee_document')" wire:confirm="Are you sure want to delete this?"
+                            class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
+                        &times;
+                    </button>
+                @endif
+            </div>
+        @else
+            <!-- ใช้ Factory Function เพื่อให้แต่ละ component มีตัวแปรของตัวเอง -->
+            <div x-data="dataGuaranteeDocument('data_guarantee_document')" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                
+                <!-- แสดงรูปพรีวิวถ้ามี -->
+                <template x-if="previewUrl">
+                    <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                </template>
+
+                <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+
+                <!-- ปุ่มเพิ่มรูปภาพ -->
+                <label :for="'file-upload-' + fill_name" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                    เพิ่มรูปภาพ
+                </label>
+
+                <!-- Input file ที่ซ่อนอยู่ -->
+                <input wire:model="editing_data_guarantee_document" :id="'file-upload-' + fill_name" type="file" class="hidden"
+                    @change="
+                        const file = $event.target.files[0];
+                        if (file) {
+                            fileName = file.name;
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                previewUrl = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    ">
+
+                <!-- ปุ่มบันทึก และ ปุ่มยกเลิก -->
+                <div class="mt-2 flex space-x-2">
+                    <!-- ปุ่มบันทึก -->
+                    <button wire:click="insertStudentPhoto(id)" x-show="previewUrl"
+                        class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                        บันทึก
+                    </button>
+
+                    <!-- ปุ่มยกเลิก -->
+                    <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>
+        @endif
+    </div>
+    <div class="relative inline-block" >
+        <label class="block text-gray-700 font-bold mb-2">เอกสารยืนยันข้อมูลการเงิน</label>
+
+        @if ($student_register->CertificationDocument->financial_guarantee_document)
+            <div class="relative">
+                <img src="{{ Storage::url($student_register->CertificationDocument->financial_guarantee_document) }}" alt="" class="w-full h-auto rounded-lg shadow-md">
+
+                @if($editing_student_register_id == $student_register->id)
+                    <!-- ปุ่มลบ -->
+                    <button wire:click="deleteCertification('financial_guarantee_document')" wire:confirm="Are you sure want to delete this?"
+                            class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-700">
+                        &times;
+                    </button>
+                @endif
+            </div>
+        @else
+            <!-- ใช้ Factory Function เพื่อให้แต่ละ component มีตัวแปรของตัวเอง -->
+            <div x-data="financialGuaranteeDocument('financial_guarantee_document')" class="w-40 h-40 border-2 border-gray-300 flex flex-col items-center justify-center rounded-lg bg-gray-100">
+                
+                <!-- แสดงรูปพรีวิวถ้ามี -->
+                <template x-if="previewUrl">
+                    <img :src="previewUrl" class="w-full h-auto rounded-lg">
+                </template>
+
+                <!-- แสดงข้อความถ้ายังไม่มีไฟล์ -->
+                <p x-show="!previewUrl" class="text-gray-500" x-text="fileName ? fileName : 'ยังไม่มีไฟล์'"></p>
+
+                <!-- ปุ่มเพิ่มรูปภาพ -->
+                <label :for="'file-upload-'+fill_name" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700">
+                    เพิ่มรูปภาพ
+                </label>
+
+                <!-- Input file ที่ซ่อนอยู่ -->
+                <input wire:model="editing_financial_guarantee_document" :id="'file-upload-'+fill_name" type="file" class="hidden"
+                    @change="
+                        const file = $event.target.files[0];
+                        if (file) {
+                            fileName = file.name;
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                previewUrl = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    ">
+
+                <!-- ปุ่มบันทึก และ ปุ่มยกเลิก -->
+                <div class="mt-2 flex space-x-2">
+                    <!-- ปุ่มบันทึก -->
+                    <button wire:click="insertStudentPhoto(id)" x-show="previewUrl"
+                        class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700">
+                        บันทึก
+                    </button>
+
+                    <!-- ปุ่มยกเลิก -->
+                    <button @click="fileName = ''; previewUrl = ''" x-show="previewUrl"
+                        class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>
+        @endif
+    </div>
+
+</div>
+<div>
+    <div>
+        @if(Auth::user()->role_id == 1)
+        <button wire:click="insertStudentSponsored({{$student_register->id}})" type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+            เพิ่มข้อมูลรายชื่อเข้าเป็นนักเรียนทุนการศึกษา
+        </button>
+        @endif
+    </div>
+</div>
+
+
     
     </div>
 </div>

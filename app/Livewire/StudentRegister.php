@@ -2,6 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Models\CertificationDocument;
+use App\Models\Financial;
+use App\Models\RegisterPoint;
 use App\Models\StudentParents;
 use App\Models\StudentRegister as Student;
 use App\Models\StudentParentsFileUploads;
@@ -9,6 +12,7 @@ use App\Models\StudentRegisterHomePhotos;
 use App\Models\StudentRegisterPhotos;
 use App\Models\School;
 use App\Models\StudentRegisterFileUploads;
+use App\Models\StudyLevel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
@@ -38,12 +42,21 @@ class StudentRegister extends Component
 
     public $parent_copy_of_house_registration, $parent_copy_of_id_card;
 
-    
+    public $study_point;
+    public $financial_point;
+
+    public $data_guarantee_document;
+    public $financial_guarantee_document;
+
+    public $certificate_point;
 
     public function render()
     {
         $schools = School::all();
-        return view('livewire.student-register',compact('schools'));
+        $study_level = StudyLevel::all();
+        $financial = Financial::all();
+        
+        return view('livewire.student-register',compact('schools','study_level','financial'));
     }
 
 
@@ -72,6 +85,14 @@ class StudentRegister extends Component
             'parent_google_map_link' => 'required',
             'parent_copy_of_house_registration' => 'required',
             'parent_copy_of_id_card' => 'required',
+
+            'study_point' => 'required',
+            'financial_point' => 'required',
+            'data_guarantee_document' => 'nullable',
+            'financial_guarantee_document' => 'nullable',
+
+
+            
         ]);
 
 
@@ -82,9 +103,50 @@ class StudentRegister extends Component
             'line_id' => $this->student_line_id,
             'google_map_link' => $this->student_google_map_link,
             'education_level' => $this->student_education_level,
-            'status_id' => 1,
+            'status_id' => 8,
             'user_id' => Auth::user()->id,
             'school_id' => $this->school_id,
+        ]);
+
+        
+
+        if(!$this->data_guarantee_document and !$this->financial_guarantee_document){
+            CertificationDocument::create([
+                'data_guarantee_document' => null,
+                'financial_guarantee' => null,
+                'student_register_id' => $student_insert->id
+            ]);
+            $this->certificate_point = 0;
+        }elseif($this->data_guarantee_document and !$this->financial_guarantee_document){
+            $data_guarantee_document_path = $this->data_guarantee_document->store('uploads/student_register/Certification','public');
+            CertificationDocument::create([
+                'data_guarantee_document' => $data_guarantee_document_path,
+                'financial_guarantee' => null,
+                'student_register_id' => $student_insert->id
+            ]);
+            $this->certificate_point = 50;
+        }elseif(!$this->data_guarantee_document and $this->financial_guarantee_document){
+            $financial_guarantee_document_path = $this->financial_guarantee_document->store('uploads/student_register/Certification','public');
+            CertificationDocument::create([
+                'data_guarantee_document' => null,
+                'financial_guarantee' => $financial_guarantee_document_path,
+                'student_register_id' => $student_insert->id
+            ]);
+            $this->certificate_point = 50;
+        }elseif($this->data_guarantee_document and $this->financial_guarantee_document){
+            $data_guarantee_document_path = $this->data_guarantee_document->store('uploads/student_register/Certification','public');
+            $financial_guarantee_document_path = $this->financial_guarantee_document->store('uploads/student_register/Certification','public');
+            CertificationDocument::create([
+                'data_guarantee_document' => $data_guarantee_document_path,
+                'financial_guarantee_document' => $financial_guarantee_document_path,
+                'student_register_id' => $student_insert->id
+            ]);
+            $this->certificate_point = 100;
+        }
+
+        $register_point = RegisterPoint::create([
+            'total_point' => $this->study_point + $this->financial_point,
+            'student_register_id' => $student_insert->id
         ]);
         
         
@@ -98,7 +160,7 @@ class StudentRegister extends Component
         }
 
         if($this->student_copy_of_house_registration){
-            $student_copy_of_house_registration_file_path = $this->student_copy_of_id_card->store('uploads/student_register','public');
+            $student_copy_of_house_registration_file_path = $this->student_copy_of_house_registration->store('uploads/student_register','public');
         }
 
         if($this->essay){

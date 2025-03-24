@@ -20,6 +20,12 @@ class StatusSeeder extends Seeder
                 ],
                 [
                     'status_name' => 'No_Active'
+                ],
+                [
+                    'is_student_register'
+                ],
+                [
+                    'status_name' => 'is_student_sponsored'
                 ]   
             ],
             );

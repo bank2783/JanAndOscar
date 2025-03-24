@@ -22,11 +22,31 @@ class StudentRegister extends Model
         return $this->hasOne(StudentRegisterFileUploads::class,'student_register_id');
     }
 
+    public function studentRegisterPhoto(){
+        return $this->hasOne(StudentRegisterPhotos::class,'student_register_id');
+    }
+
     public function studentParent(){
         return $this->hasOne(StudentParents::class,'student_register_id');
     }
 
     public function studentParentFileUpload(){
-        return $this->hasOne(StudentParentsFileUploads::class,('student_register_id'));
+        return $this->hasOne(StudentParentsFileUploads::class,'student_register_id');
     }
+
+    public function CertificationDocument(){
+        return $this->hasOne(CertificationDocument::class,'student_register_id');
+    }
+
+    public function academicPerformance(){
+        return $this->hasOne(AcademicPerfomance::class,'student_register_id');
+    }
+
+    public function RegisterPoint(){
+        return $this->hasOne(RegisterPoint::class,'student_register_id');
+    }
+
+
+
+
 }

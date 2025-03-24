@@ -4,6 +4,7 @@ use App\Livewire\Admin\Dashboard;
 use App\Livewire\Home\Register;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Home\Login;
+use App\Livewire\Lab\TestTesseractOCR;
 use App\Livewire\StudentRegister;
 use App\Livewire\StudentRegister\ShowStudentRegisterData;
 use App\Livewire\StudentRegister\ShowStudentRegisterList;
@@ -21,8 +22,10 @@ Route::get('/', function () {
 //     return view('admin.Dashboard');
 // });
 
-Route::get('/admin/student-register-list',Dashboard::class);
 
+
+Route::get('/admin/student-register-list',ShowStudentRegisterList::class);
+Route::get('/admin/dashboard',Dashboard::class);
 Route::get('/test-modal',function () {
     return view('testModal');
 });
@@ -42,7 +45,7 @@ Route::get('/student-register-list',ShowStudentRegisterList::class)->name('stude
 //     return view('home.register');
 // });
 
-Route::get('/student-register-data/{student}',ShowStudentRegisterData::class)->name('student-register-data');
+Route::get('/student-register-data/{student}',ShowStudentRegisterData::class)->name('student.register.data');
 Route::get('/user-data',ShowUserData::class)->name('showUSerData');
 Route::get('/register',Register::class);
 
@@ -53,3 +56,4 @@ Route::get('/login', function (){
 Route::get('/student-register',StudentRegister::class);
     
 
+Route::get('lab/testTesseractORC',TestTesseractOCR::class);

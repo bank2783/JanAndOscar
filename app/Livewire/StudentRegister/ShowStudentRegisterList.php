@@ -25,6 +25,12 @@ class ShowStudentRegisterList extends Component
     public function render()
     {
         $student_register_list = StudentRegister::where('user_id',Auth::user()->id)->get();
-        return view('livewire.student-register.show-student-register-list',compact('student_register_list'));
+        if(auth::user()->role_id == 2){
+            return view('livewire.student-register.show-student-register-list',compact('student_register_list'));
+        }else{
+            return view('livewire.student-register.show-student-register-list',compact('student_register_list'))
+            ->layout('Admin.components.layouts.app');
+        }
+        
     }
 }

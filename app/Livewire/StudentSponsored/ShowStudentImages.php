@@ -2,6 +2,7 @@
 
 namespace App\Livewire\StudentSponsored;
 
+use App\Models\StudentRegister;
 use App\Models\StudentRegisterPhotos;
 use App\Models\StudentSponsored;
 use App\Models\StudentSponsoredPhotos;
@@ -19,7 +20,7 @@ class ShowStudentImages extends Component
     #[Rule('required')]
     public $images_upload_file = [];
 
-    public function mount(StudentSponsored $student){
+    public function mount(StudentRegister $student){
         $this->student_data = $student;
         
     }
@@ -28,9 +29,9 @@ class ShowStudentImages extends Component
         $this->validate();
         foreach($this->images_upload_file as $file){
             $student_sponsored_file_path = $file->store('uploads/student_sponsored','public');
-            StudentSponsoredPhotos::create([
+            StudentRegisterPhotos::create([
                 'file_name' => $student_sponsored_file_path,
-                'studentSponsored_id' => $this->student_data->id,
+                'student_register_id' => $this->student_data->id,
             ]);
         }
         session()->flash('insert_massage','student data updated!');
@@ -38,7 +39,7 @@ class ShowStudentImages extends Component
     }
 
     public function deletePhoto($id){
-        $student_image = StudentSponsoredPhotos::find($id);
+        $student_image = StudentRegisterPhotos::find($id);
 
         if($student_image){
             Storage::delete($student_image->file_name);
@@ -47,7 +48,7 @@ class ShowStudentImages extends Component
     }
     public function render()
     {
-        $this->student_images = StudentSponsoredPhotos::where('studentSponsored_id',$this->student_data->id)->get();
+        $this->student_images = StudentRegisterPhotos::where('student_register_id',$this->student_data->id)->get();
         return view('livewire.student-sponsored.show-student-images')->layout('Admin.components.layouts.app');
     }
 }

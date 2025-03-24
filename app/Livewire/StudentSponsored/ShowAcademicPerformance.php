@@ -3,6 +3,7 @@
 namespace App\Livewire\StudentSponsored;
 
 use App\Models\AcademicPerfomance;
+use App\Models\StudentRegister;
 use App\Models\StudentSponsored;
 use Livewire\Component;
 use Livewire\Attributes\Rule; 
@@ -19,12 +20,12 @@ class ShowAcademicPerformance extends Component
 
     public $annotation;
  
-    public function mount(StudentSponsored $student){
+    public function mount(StudentRegister $student){
         $this->student = $student;
     }
     public function render()
     {
-        $student_academic_performance = AcademicPerfomance::where('sponsoredStudent_id',$this->student->id)->get();
+        $student_academic_performance = AcademicPerfomance::where('student_register_id',$this->student->id)->get();
         return view('livewire.student-sponsored.show-academic-performance',compact('student_academic_performance'))->layout('Admin.components.layouts.app');
     }
 
@@ -35,7 +36,7 @@ class ShowAcademicPerformance extends Component
             AcademicPerfomance::create([
                 'file_name' => $academic_performance_file_path,
                 'annotation' => $this->annotation,
-                'sponsoredStudent_id' => $this->student->id,
+                'student_register_id' => $this->student->id,
             ]
             );
 
