@@ -1,6 +1,10 @@
 <?php
 
+use App\Livewire\Admin\AcademicReport;
+use App\Livewire\Admin\AcademicReportResult;
 use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\ReceivingScholarship;
+use App\Livewire\Admin\School;
 use App\Livewire\Home\Register;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Home\Login;
@@ -21,20 +25,30 @@ Route::get('/', function () {
 // Route::get('/admin/Dashboard',function (){
 //     return view('admin.Dashboard');
 // });
-
+Route::get('preview-academicPerformance',function () {
+    return view('Admin.report.AcademicPerformanceReport');
+});
 
 
 Route::get('/admin/student-register-list',ShowStudentRegisterList::class);
-Route::get('/admin/dashboard',Dashboard::class);
+Route::get('/admin/dashboard',Dashboard::class)->name('admin.dashboard');
 Route::get('/test-modal',function () {
     return view('testModal');
 });
-
-Route::get('/admin/student-sponsored-list',ShowStudentSponsoredList::class);
+Route::get('/admin/student-scholarship/{student}',ReceivingScholarship::class)->name('admin.student-scholarship');
+Route::get('/admin/student-sponsored-list',ShowStudentSponsoredList::class)->name('student-sponsored-list');
+Route::get('/admin/academic-report/{student}',AcademicReport::class)->name('admin.academicReport');
+Route::get('/admin/academic-report-result/{student}',AcademicReportResult::class)->name('admin.academicReportResult');
+Route::get('admin/school',School::class)->name('admin.school');
+// Route::get('/admin/student-sponsored-list', function () {
+//     return view('livewire.admin.student-sponsored')->layout('Admin.components.layouts.app');
+// });
 
 // Route::get('/admin/student-register-data/{student}', function () {
 //     return view('Admin.student_regsiter_data');
 // });
+
+
 
 Route::get('/admin/sponsored-student/{student}',ShowData::class)->name('admin.studentSponsoredData');
 Route::get('/admin/sponsored-student/images/{student}',ShowStudentImages::class)->name('admin.studentSponsoredPhotos');

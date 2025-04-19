@@ -73,7 +73,7 @@
 
                 <div>
                     <label class="block text-lg font-bold text-gray-700 ">ไอดีไลน์</label>
-                    <p class="mt-1 text-sm">{{$student_data -> line_id}}</p>
+                    {{-- <p class="mt-1 text-sm">{{$student_data->line_id}}</p> --}}
                 </div>
                 @endif
 
@@ -123,7 +123,7 @@
                 @else
                 <div class="md:col-span-2">
                     <label class="block text-lg font-bold text-gray-700 ">ที่อยู่</label>
-                    <p class="mt-1 text-sm ">{{$student_data -> address}}</p>
+                    <p class="mt-1 text-sm ">{{$student_data -> adress}}</p>
                 </div>
                 @endif
 
@@ -160,7 +160,7 @@
 
                 <div class="w-80">
                     <label class="block text-gray-700 font-bold mb-2">ชื่อ</label>
-                    <input wire:model="editing_parent_name" value="{{$student_data->StudentParent->parent_name}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+                    <input wire:model="editing_parent_name" value="{{$student_data->studentParent->parent_name}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
                     @error('editing_student_register_name')
                         <span class="text-red-500 text-xs block">{{$message}}</span>
                     @enderror
@@ -169,7 +169,7 @@
                 @else
                 <div class="md:col-span-2">
                     <label class="block text-lg font-bold text-gray-700 ">ชื่อ</label>
-                    <p class="mt-1 text-sm ">{{$student_data ->StudentParent->parent_name}}</p>
+                    <p class="mt-1 text-sm ">{{$student_data ->studentParent->parent_name}}</p>
                 </div>
                 @endif
 
@@ -178,7 +178,7 @@
                 @if($editing_student_id == $student_data->id)
                 <div class="w-80">
                     <label class="block text-gray-700 font-bold mb-2">เบอร์โทร</label>
-                    <input wire:model="editing_parent_tel" value="{{$student_data->StudentParent->tel}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+                    <input wire:model="editing_parent_tel" value="{{$student_data->studentParent->tel}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
                     @error('editing_student_register_name')
                         <span class="text-red-500 text-xs block">{{$message}}</span>
                     @enderror
@@ -186,7 +186,7 @@
                 @else
                 <div>
                     <label class="block text-lg font-bold text-gray-700 ">เบอร์โทร</label>
-                    <p class="mt-1 text-sm">{{$student_data -> StudentParent->tel}}</p>
+                    <p class="mt-1 text-sm">{{$student_data ->studentParent->tel}}</p>
                 </div>
                 @endif
 
@@ -194,7 +194,7 @@
 
                 <div class="w-80">
                     <label class="block text-gray-700 font-bold mb-2">ไลน์ไอดี</label>
-                    <input wire:model="editing_parent_line_id" value="{{$student_data->StudentParent->line_id}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+                    <input wire:model="editing_parent_line_id" value="{{$student_data->studentParent->line_id}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
                     @error('editing_student_register_name')
                         <span class="text-red-500 text-xs block">{{$message}}</span>
                     @enderror
@@ -203,8 +203,8 @@
                 @else
 
                 <div>
-                    <label class="block text-lg font-bold text-gray-700 ">ระดับการศึกษา</label> 
-                    <p class="mt-1 text-sm">{{$student_data -> StudentParent->line_id}}</p>
+                    <label class="block text-lg font-bold text-gray-700 ">ไลน์ไอดี</label> 
+                    <p class="mt-1 text-sm">{{$student_data ->studentParent->line_id}}</p>
                 </div>
 
                 @endif
@@ -213,7 +213,7 @@
 
                 <div class="w-80">
                     <label class="block text-gray-700 font-bold mb-2">google_map_link</label>
-                    <input wire:model="editing_parent_google_map_link" value="{{$student_data->StudentParent->google_map_link}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+                    <input wire:model="editing_parent_google_map_link" value="{{$student_data->studentParent->google_map_link}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
                     @error('editing_student_register_name')
                         <span class="text-red-500 text-xs block">{{$message}}</span>
                     @enderror
@@ -223,7 +223,7 @@
 
                 <div>
                     <label class="block text-lg font-bold text-gray-700 ">google_map_link</label> 
-                    <p class="mt-1 text-sm">{{$student_data -> StudentParent->google_map_link}}</p>
+                    <p class="mt-1 text-sm">{{$student_data ->studentParent->google_map_link}}</p>
                 </div>
 
                 @endif
@@ -232,7 +232,7 @@
 
                 <div class="w-80">
                     <label class="block text-gray-700 font-bold mb-2">ที่อยู่</label>
-                    <input wire:model="editing_parent_address" value="{{$student_data->StudentParent->address}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
+                    <input wire:model="editing_parent_address" value="{{$student_data->studentParent->address}}" type="text" class=" text-gray-900 text-sm rounded block w-full border p-2.5">
                     @error('editing_student_register_name')
                         <span class="text-red-500 text-xs block">{{$message}}</span>
                     @enderror
@@ -242,7 +242,7 @@
 
                 <div class="md:col-span-2">
                     <label class="block text-lg font-bold text-gray-700 ">ที่อยู่</label>
-                    <p class="mt-1 text-sm">{{$student_data -> StudentParent->address}}</p>
+                    <p class="mt-1 text-sm">{{$student_data->studentParent->address}}</p>
                 </div>
 
                 @endif 
@@ -257,6 +257,15 @@
             </a>
             <a href="{{route('admin.studentSponsored.academicperformance',$student_data->id)}}" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                 ดูผลการเรียนของนักเรียน
+            </a>
+        </div>
+        <div class="flex justify-center">
+            <a href="{{route('admin.academicReport',$student_data->id)}}" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                ทำรายงานผลการเรียน
+            </a>
+            <a href="{{route('admin.student-scholarship',$student_data->id)}}" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                ข้อมูลการมอบทุนการศึกษา
+                
             </a>
         </div>
     </div>

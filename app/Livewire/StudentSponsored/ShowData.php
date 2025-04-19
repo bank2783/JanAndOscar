@@ -80,13 +80,13 @@ class ShowData extends Component
                 'student_name' => $this->editing_student_name,
                 'tel' => $this->editing_student_tel,
                 'line_id' => $this->editing_student_line_id,
-                'adress' => $this->editing_student_address,
+                'address' => $this->editing_student_address,
                 'education_level' => $this->editing_student_education_level,
                 'google_map_link' => $this->editing_student_google_map_link,
             ]);
         }
 
-        $student_parent = StudentParents::where('student_register_id',$this->student_data->id);
+        $student_parent = StudentParents::where('student_sponsored_id',$this->student_data->id);
 
         if($student_parent){
             $student_parent->update([

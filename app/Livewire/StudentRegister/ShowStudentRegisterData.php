@@ -10,10 +10,7 @@ use App\Models\StudentRegister;
 use App\Models\StudentRegisterFileUploads;
 use App\Models\StudentRegisterHomePhotos;
 use App\Models\StudentRegisterPhotos;
-use App\Models\StudentSponsored;
-use App\Models\StudentSponsoredParent;
-use App\Models\StudentSponsoredParents;
-use App\Models\StudentSponsoredPhotos;
+
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Rule; 
 use Livewire\Component;

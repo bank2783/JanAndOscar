@@ -46,6 +46,14 @@ class StudentRegister extends Model
         return $this->hasOne(RegisterPoint::class,'student_register_id');
     }
 
+    public function StudentReceivingScholarship(){
+        return $this->hasOne(ReceivingScholarship::class,'student_register_id');
+    }
+
+    public function TotalStudentReceivingScholarship($student_id){
+        return ReceivingScholarship::where('student_register_id',$student_id)->sum('scholarship');
+    }
+
 
 
 

@@ -239,4 +239,5 @@
         <div class="text-green-500 text-xs">{{ session('success') }}</div>
       @endif
     </div>
-  <div/>
+  </div>
+  

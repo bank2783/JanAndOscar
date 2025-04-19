@@ -31,12 +31,20 @@
   
   <div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
     <i class="bi bi-house-door-fill"></i>
-    <span class="text-[15px] ml-4 text-gray-200">Home</span>
+    <a href="{{route('admin.dashboard')}}" class="text-[15px] ml-4 text-gray-200">Home</a>
   </div>
 
   <div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
+    <i class="bi bi-person-check-fill"></i>
+    <a href="{{route('student-sponsored-list')}}" class="text-[15px] ml-4 text-gray-200">รายชื่อนักเรียนในมูลนิธิ</a>
+      
+   
+  </div>
+
+
+  <div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
     <i class="bi bi-bookmark-fill"></i>
-    <span class="text-[15px] ml-4 text-gray-200">Bookmark</span>
+    <a href="{{route('studentRegisterList')}}" class="text-[15px] ml-4 text-gray-200">รายการลงทะเบียนขอทุนการศึกษา</a>
   </div>
 
   <hr class="my-4 text-gray-600">
