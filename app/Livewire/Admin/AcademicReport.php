@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\AcademicPerfomance;
+use App\Models\StudentRegister;
 use App\Models\StudentSponsored;
 use Livewire\Component;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -13,7 +14,7 @@ class AcademicReport extends Component
     public $student_data;
     public $onselect_academic_performance;
     public $academic_performance;
-    function mount(StudentSponsored $student){
+    function mount(StudentRegister $student){
         $this->student_data = $student;
         $this->academic_performance = AcademicPerfomance::where('student_register_id',$student->id)->get();
     }

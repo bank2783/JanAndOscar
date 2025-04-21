@@ -9,6 +9,6 @@ class AcademicPerfomance extends Model
     protected $fillable = [
         'file_name',
         'annotation',
-        'sponsoredStudent_id'
+        'student_register_id'
     ];
 }

@@ -80,18 +80,19 @@
                 <span>JanAndOscar Report Academic Performance Report</span>
             </div>
             <div class="date">
-                <span > date 07/04/2025</span>
+                <span > {{ \Carbon\Carbon::now()->format('d/m/Y') }}
+                </span>
             </div>
             
         </div>
         <hr>
         <div class="detail-container">
             <div>
-                <label for="">Name</label>
+                <label for="">ชื่อ นามสกุล</label>
                 <div class="name">{{$student_data->student_name}}</div>
             </div>
             <div class="bachelor-content">
-                <label for="">Term</label>
+                <label for="">ภาคเรียน</label>
                 <div class="name">{{ $academic_performance->annotation}}</div>
             </div>
             

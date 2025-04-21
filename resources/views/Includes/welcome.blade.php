@@ -15,8 +15,8 @@
     <!-- Hero Section -->
     <section class="bg-[#dd3333] text-white py-20">
         <div class="max-w-4xl text-white mx-auto text-center">
-            <h1 class="text-5xl font-bold mb-6">Welcome to MyWebsite</h1>
-            <p class="text-xl text-[#ffc500] mb-8">We provide the best solutions for your business needs.</p>
+            <h1 class="text-5xl font-bold mb-6">Welcome to JanAndOscar</h1>
+            <p class="text-xl text-[#ffc500] mb-8">We support all student </p>
             <a href="#" class="bg-white text-[#dd3333] px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300">
                 Get Started
             </a>

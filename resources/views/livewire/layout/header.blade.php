@@ -14,44 +14,62 @@
                 <img class="w-40" src="https://www.fondationjan-oscar.ch/JO/wp-content/uploads/2016/07/Logo-JO.png" alt="...">
             </div>
             <div class="nav-links duration-200 md:static absolute bg-white mt-7 md:min-h-fit min-h-[60vh] left-0 top-[-100%] md:top-0 w-full flex items-center px-5 md:w-auto">
-                <ul class="flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-12">
-                    <li>
-                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">หน้าแรก</a>
+                <ul class="flex md:flex-row flex-col md:items-center md:gap-[2vw] gap-5">
+                    <li >
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="/">หน้าแรก</a>
                     </li>
                     <li>
-                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">ลงทะเบียนขอทุนการศึกษา</a>
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="{{route('student_register')}}">ลงทะเบียนขอทุนการศึกษา</a>
                     </li>
                     <li>
-                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">สำหรับผู้ดูแลระบบ</a>
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="{{route('admin.dashboard')}}">สำหรับผู้ดูแลระบบ</a>
                     </li>
                     @if(Auth::check())
 
                     <li>
-                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">ตรวจสอบรายชื่อการขอทุนการศึกษา</a>
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="{{route('studentRegisterList')}}">รายชื่อการขอทุนการศึกษา</a>
+                    </li>
+                    <li>
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="{{route('showUSerData')}}" >จัดการบัญชีผู้ใช้</a>
                     </li>
 
                     @endif
                     
-                    @if(!Auth::check())
-                    <li>
-                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">สมัครสมาชิก</a>
+                    @if(Auth::check())
+                    
+                    <li class="truncate w-30">
+                        {{auth::user()->name}}
                     </li>
                     <li>
-                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="#">เข้าสู่ระบบ</a>
+                        <a href="{{route('logout')}}">ออกจากระบบ</a>
                     </li>
 
-                    @endif 
+                    @else
+                    <li>
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="{{route('register')}}">สมัครสมาชิก</a>
+                    </li>
+                    <li>
+                        <a class="text-[#dd3333] hover:text-[#ffc500]" href="{{route('login')}}">เข้าสู่ระบบ</a>
+                    </li>
+
+                    @endif
+                    
                 </ul>
                 
             </div>
-            @if(Auth::check())
+            {{-- @if(Auth::check())
             <div class="items-center flex justify-between mt-7 text-gray-500">
-                {{Auth::user()->name}} <!-- ใช้ไอคอนจาก Heroicons -->
+                <div>
+                    <span class="truncate w-40">{{Auth::user()->name}}</span>
+                </div> <!-- ใช้ไอคอนจาก Heroicons -->
                 <div class="text-green-500 ml-2">
                     •
                 </div>
+                <div class="ml-3">
+                    <a href="{{route('logout')}}">ออกจากระบบ</a>
+                </div>
             </div>
-            @endif
+            @endif --}}
             <div class="flex items-center gap-6">
                 <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
             </div>

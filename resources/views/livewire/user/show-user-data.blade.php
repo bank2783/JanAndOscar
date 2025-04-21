@@ -5,7 +5,7 @@
             <h2 class="text-lg font-bold mb-6">เมนู</h2>
             <ul class="space-y-4">
                 <li>
-                    <a href="#" class="hover:text-gray-300">ดูรายชื่อนักเรียนที่ขอทุนการศึกษา</a>
+                    <a href="{{route('studentRegisterList')}}" class="hover:text-gray-300">ดูรายชื่อนักเรียนที่ขอทุนการศึกษา</a>
                 </li>
                 
                 <li>

@@ -1,8 +1,12 @@
-<div x-data="{ open: false }">
-    <button @click="open = true" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-        เพิ่มรูปภาพ
-    </button>
 
+
+<div x-data="{ open: false }" class="">
+    
+    <div class="flex justify-end mt-3">
+        <button @click="open = true" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+            เพิ่มรูปภาพ
+        </button>
+    </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
         @foreach ($student_academic_performance as $row)

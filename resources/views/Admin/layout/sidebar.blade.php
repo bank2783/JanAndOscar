@@ -9,7 +9,7 @@
   </div>
   <div class="auth-name ml-auto text-gray-300 mr-3">
     <i class="bi bi-person-circle mr-2 text-[18px]"></i>
-    <span class="">auth name</span>
+    <span class="">{{Auth::user()->name}}</span>
     <i class="bi bi-chevron-down text-[10px]"></i>
   </div>
 </div>
@@ -46,16 +46,20 @@
     <i class="bi bi-bookmark-fill"></i>
     <a href="{{route('studentRegisterList')}}" class="text-[15px] ml-4 text-gray-200">รายการลงทะเบียนขอทุนการศึกษา</a>
   </div>
+  <div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
+    <i class="bi bi-bookmark-fill"></i>
+    <a href="{{route('admin.schools')}}" class="text-[15px] ml-4 text-gray-200">ข้อมูลโรงเรียน</a>
+  </div>
 
   <hr class="my-4 text-gray-600">
 
-  <div onclick="dropdown()" class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
+  {{-- <div onclick="dropdown()" class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
     <i class="bi bi-chat-left-text-fill"></i>
     <div class="flex justify-between w-full items-center">
       <span class="text-[15px] ml-4 text-gray-200">Chatbox</span>
       <i class="bi bi-chevron-down" id="arrow"></i>
     </div>
-  </div>
+  </div> --}}
   <div class="text-left text-sm font-thin mt-2 w-4/5 mx-auto text-gray-200 hidden" id="submenu">
     <h1 class="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Social</h1>
     <h1 class="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Personal</h1>
@@ -64,7 +68,7 @@
 
   <div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
     <i class="bi bi-box-arrow-in-right"></i>
-    <span class="text-[15px] ml-4 text-gray-200">Logout</span>
+    <a href="{{route('logout')}}" class="text-[15px] ml-4 text-gray-200">Logout</a>
   </div>
 </div>
 

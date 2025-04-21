@@ -9,10 +9,14 @@
     
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Document</title>
 </head>
 <body class="bg-gray-100 text-gray-900">
+   
+    
     <!-- Header -->
+   
     <livewire:layout.header />
 
     <!-- Content -->
@@ -21,6 +25,7 @@
     </main>
 
     <!-- Footer -->
+    
     <livewire:layout.footer />
 
     @livewireScripts
