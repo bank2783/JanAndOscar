@@ -6,6 +6,8 @@ use App\Livewire\Admin\CreateStudent;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\ReceivingScholarship;
 use App\Livewire\Admin\School;
+use App\Livewire\Admin\Teacher;
+use App\Livewire\Admin\TeacherData;
 use App\Livewire\Home\Register;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Home\Login;
@@ -22,6 +24,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Middleware\CheckAdmin;
 use App\Http\Middleware\CheckLogin;
+use App\Livewire\Admin\Awarded;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -41,13 +45,15 @@ Route::get('preview-academicPerformance',function () {
 
 Route::get('/admin/student-register-list',ShowStudentRegisterList::class);
 Route::get('/admin/dashboard',Dashboard::class)->name('admin.dashboard')->middleware('CheckAdmin');
-
+Route::get('admin/teacher',Teacher::class)->name('teacher')->middleware('CheckAdmin');
 Route::get('/admin/student-scholarship/{student}',ReceivingScholarship::class)->name('admin.student-scholarship')->middleware('CheckAdmin');
 Route::get('/admin/student-sponsored-list',ShowStudentSponsoredList::class)->name('student-sponsored-list')->middleware('CheckAdmin');
 Route::get('/admin/academic-report/{student}',AcademicReport::class)->name('admin.academicReport')->middleware('CheckAdmin');
 Route::get('/admin/academic-report-result/{student}',AcademicReportResult::class)->name('admin.academicReportResult')->middleware('CheckAdmin');
 Route::get('admin/school',School::class)->name('admin.schools')->middleware('CheckAdmin');
 Route::get('admin/create-student-view',CreateStudent::class)->name('admin.createStudent');
+Route::get('admin/scholarship-list',Awarded::class)->name('awarded');
+ROute::get('admin/teacher-data/{teacher}',TeacherData::class)->name('admin.teacher-data');
 // Route::get('/admin/student-sponsored-list', function () {
 //     return view('livewire.admin.student-sponsored')->layout('Admin.components.layouts.app');
 // });

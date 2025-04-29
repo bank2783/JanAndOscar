@@ -14,6 +14,5 @@ class StudentParents extends Model
         'google_map_link',
         'student_register_id',
         'status'
-        
     ];
 }

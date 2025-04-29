@@ -17,7 +17,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = ['name', 'email', 'password', 'status_id', 'role_id','tel'];
+    protected $fillable = ['name', 'email', 'password', 'status_id', 'role_id','tel','school_id'];
 
 
     /**
@@ -42,6 +42,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function School(){
+        return $this->hasOne(School::class,'id');
+    }
+
+    
 
     
 }

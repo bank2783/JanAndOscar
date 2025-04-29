@@ -42,6 +42,12 @@ class School extends Component
             $this->cancelEdit();  
         }
     }
+    public function delete(schoolModel $school){
+        $school->delete();
+        if($school){
+            session()->flash('insert_massage','delete is successfully!');
+        }
+    }
     public function render()
     {
         if(strlen($this->search) >=1){

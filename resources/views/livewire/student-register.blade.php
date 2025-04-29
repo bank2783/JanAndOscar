@@ -1,4 +1,7 @@
 <div class="bg-gray-100 flex items-center justify-center min-h-screen">
+  
+    <span class="text-4xl">รายการข้อมูลนักเรียนที่ได้รับทุนการศึกษา</span>
+  </div>
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
       <h1 class="text-2xl font-bold mb-6 text-center">แบบฟอร์มลงทะเบียนขอทุนการศึกษา</h1>
       <form wire:submit="insert" action="" class="space-y-6">

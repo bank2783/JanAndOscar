@@ -660,9 +660,7 @@ function financialGuaranteeDocument(fill_name){
     </div>
     
     <div>
-    @if (session()->has('insert_student_sponsored'))
-    <div class="text-green-500 text-xs">{{ session('insert_student_sponsored') }}</div>
-      @endif
+    
     </div>
 </div>
 <div class="mt-10">
@@ -803,6 +801,9 @@ function financialGuaranteeDocument(fill_name){
             เพิ่มข้อมูลรายชื่อเข้าเป็นนักเรียนทุนการศึกษา
         </button>
         @endif
+        @if (session()->has('insert_student_sponsored'))
+    <div class="text-green-500 text-xs mt-4">{{ session('insert_student_sponsored') }}</div>
+      @endif
     </div>
 </div>
 

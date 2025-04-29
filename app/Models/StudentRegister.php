@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentRegister extends Model
 {
@@ -53,6 +54,15 @@ class StudentRegister extends Model
     public function TotalStudentReceivingScholarship($student_id){
         return ReceivingScholarship::where('student_register_id',$student_id)->sum('scholarship');
     }
+    public function ReceivingScholarship(){
+        return $this->hasOne(ReceivingScholarship::class,'student_register_id');
+    }
+
+    public function scholarships()
+    {
+    return $this->hasMany(ReceivingScholarship::class,'student_register_id');
+    }
+    
 
 
 

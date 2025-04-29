@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+    
     <livewire:student-sponsored.show-student-sponsored-list></livewire:student-sponsored.show-student-sponsored-list>
 </body>
 </html>

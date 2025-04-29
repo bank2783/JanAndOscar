@@ -108,7 +108,7 @@
                     <button wire:click.prevent="edit({{$row->id}})" class="p-3 ">
                         <i class="bi bi-pencil-square text-2xl text-cyan-500 hover:text-cyan-700"></i>
                     </button>
-                    <button>
+                    <button wire:confirm wire:click="delete({{$row->id}})">
                         <i class="bi bi-trash3 text-2xl text-red-500 hover:text-red-700"></i>
                     </button>
 

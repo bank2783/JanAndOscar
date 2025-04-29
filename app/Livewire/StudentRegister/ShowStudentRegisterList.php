@@ -10,6 +10,7 @@ use App\Models\StudentRegisterHomePhotos;
 use App\Models\StudentRegisterPhotos;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Illuminate\Support\Facades\Storage;
 
 class ShowStudentRegisterList extends Component
 {  
@@ -46,4 +47,5 @@ class ShowStudentRegisterList extends Component
         }
         
     }
+    
 }

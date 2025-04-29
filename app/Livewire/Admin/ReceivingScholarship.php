@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\ReceivingScholarship as ModelsReceivingScholarship;
 use App\Models\StudentRegister;
+use App\Models\ReceivingScholarship as ReceivingScholarshipModel;
 use Livewire\Component;
 
 class ReceivingScholarship extends Component
@@ -80,9 +81,15 @@ class ReceivingScholarship extends Component
         session()->flash('insert_massage','student data updated!');
         $this->cancelEdit();
         $this->student_data = $this->student_data->fresh();
-        }
-
-        
+        }   
     }
+
+    public function delete(ReceivingScholarshipModel $scholarship){
+        $scholarship->delete();
+        if($scholarship){
+            session()->flash('insert_massage','student data updated!');
+        }
+    }
+
 
 }

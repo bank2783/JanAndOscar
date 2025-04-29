@@ -55,7 +55,8 @@ class ShowUserData extends Component
     
     public function render()
     {
-        $user_data = User::find(Auth::user()->id)->first();
+        $user_data = User::find(Auth::user()->id);
+        
         return view('livewire.user.show-user-data',compact('user_data'));
     }
 }

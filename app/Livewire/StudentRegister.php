@@ -15,6 +15,9 @@ use App\Models\StudentRegisterFileUploads;
 use App\Models\StudyLevel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -198,7 +201,8 @@ class StudentRegister extends Component
             'line_id' => $this->parent_line_id,
             'address' => $this->parent_address,
             'google_map_link' => $this->parent_google_map_link,
-            'student_register_id' => $student_insert->id
+            'student_register_id' => $student_insert->id,
+            'status' => 0
         ]);
 
 
@@ -219,4 +223,7 @@ class StudentRegister extends Component
         session()->flash('success','Uploaded successfully.');
         
     }
+    
+
+    
 }
